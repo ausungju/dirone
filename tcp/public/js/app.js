@@ -13,17 +13,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById("map");
 
 
-    let options = { //지도를 생성할 때 필요한 기본 옵션
-        center: new kakao.maps.LatLng(35.9084, 128.8018), //지도의 중심좌표.
-        level: 6, //지도의 레벨(확대, 축소 정도)
-        disableDoubleClick: false, //더블 클릭 이벤트 및 더블 클릭 확대가능여부
-    };
-    let map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
-    var marker = new kakao.maps.Marker({
-        map: map,
-        position: new kakao.maps.LatLng(35.9084, 128.8018)
-    });
-    marker.setMap(map);
+    // let options = { //지도를 생성할 때 필요한 기본 옵션
+    //     center: new kakao.maps.LatLng(35.9084, 128.8018), //지도의 중심좌표.
+    //     level: 6, //지도의 레벨(확대, 축소 정도)
+    //     disableDoubleClick: false, //더블 클릭 이벤트 및 더블 클릭 확대가능여부
+    // };
+    // let map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
+    // var marker = new kakao.maps.Marker({
+    //     map: map,
+    //     position: new kakao.maps.LatLng(35.9084, 128.8018)
+    // });
+    // marker.setMap(map);
 
     startBtn.addEventListener("click", () => {
         socket.emit("data",`USER-${socket.id} to server: "start"\n`);

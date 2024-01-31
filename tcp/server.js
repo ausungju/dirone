@@ -3,7 +3,7 @@ const net = require('net');
 const http = require('http');
 // const https = require('https');
 const {Server} = require("socket.io");
-const {spawn} = require('child_process');
+const {spawnSync} = require('child_process');
 
 // let options = require("./.config/pem_config").options;
 
@@ -11,9 +11,11 @@ const app = express();
 const server = http.createServer(app);
 // const server = https.createServer(options, app);
 const io = new Server(server);
-const ipaddr = "192.168.0.3";
+const ipaddr = "172.23.246.241";
 
 let img = null;
+
+
 let tcp = net.createServer(function (socket) {
     socket.setEncoding('utf8')
 
@@ -21,8 +23,18 @@ let tcp = net.createServer(function (socket) {
         data = String(data);
         if(data.lastIndexOf("끝") !== -1) {
             data = data.split("끝");
+            result = spawnSync('python3', ['./python/yolo.py', img+data[0]]);
+            if(result.status !== 0) {
+                console.log(result.stderr.toString("utf8"));
+            }
+            else {
+                console.log("성공")
+                io.emit('img', result.stdout.toString("utf8"));
+            }
 
-            io.emit('img', img+data[0]);
+            // io.emit('img', img+data[0]);
+            // io.emit(spawnSync('python3', ['./python/yolo.py', img+data[0]]).stdout.toString("utf8"))
+
             img = data[1]
         }
         else {
@@ -41,7 +53,9 @@ tcp.listen(8000, ipaddr, () => {
 });
 
 io.on("connection", (socket) => {
+    let buffer = new Buffer.from("fuck");
     console.log(`클라이언트 접속 ${socket.id}`);
+    
     io.emit('client_data', `USER: ${socket.id} Enter\n`)
 
     socket.on('data', (data) => {
@@ -69,7 +83,7 @@ app.use("/public", express.static(__dirname + "/public"));
 app.get("/", (_, res) => res.render("index"));
 app.get("/*", (_, res) => res.redirect("/"));
 
-const PORT = process.env.PORT || 80;
+const PORT = process.env.PORT || 800;
 server.listen(PORT,() => {
     console.log(`listening on *:${PORT}`);
 });

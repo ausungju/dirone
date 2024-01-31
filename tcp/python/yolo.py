@@ -1,10 +1,16 @@
-from ultralytics import YOLO
-import cv2
+import sys
+import base64
+from io import BytesIO
+# from PIL import Image
+# from ultralytics import YOLO
 
-model = YOLO('./yolov8_pretrained/yolov8n.pt')
-result = model.predict("https://ultralytics.com/images/zidane.jpg", save=False,conf=0.5)
-plots = result[0].plot()
-# cv2_imshow(plots)
-cv2.imshow("ad",plots)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+
+# def detect_image(image):
+#     model = YOLO("yolov8n.pt")     
+#     results = model(image)
+#     return results
+
+image_base64 = sys.argv[1]
+image = BytesIO(base64.b64decode(image_base64))
+image_base64 = base64.b64encode(image.getvalue()).decode('utf-8')
+print(image_base64)
