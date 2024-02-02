@@ -80,7 +80,7 @@ app.use("/public", express.static(__dirname + "/public"));
 app.get("/", (_, res) => res.render("index"));
 app.get("/*", (_, res) => res.redirect("/"));
 
-const PORT = process.env.PORT || 800;
+const PORT = process.env.PORT || 80;
 server.listen(PORT,() => {
     console.log(`listening on *:${PORT}`);
 });
