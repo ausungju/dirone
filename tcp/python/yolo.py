@@ -2,9 +2,9 @@ import sys
 import base64
 from io import BytesIO
 from PIL import Image
-from ultralytics import YOLO
-import numpy as np
-import cv2
+# from ultralytics import YOLO
+# import numpy as np
+# import cv2
 
 def detect_image(image):
     model = YOLO("yolov8n.pt")  

@@ -9,7 +9,7 @@ const {spawn} = require('child_process');
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
-const ipaddr = "172.23.246.241";
+const ipaddr = "192.168.0.3";
 const python = spawn('python3', ['./python/yolo.py']);
 // const server = https.createServer(options, app);
 
