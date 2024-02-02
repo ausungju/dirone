@@ -1,21 +1,28 @@
 const express = require('express');
 const net = require('net');
 const http = require('http');
-// const https = require('https');
 const {Server} = require("socket.io");
-const {spawnSync} = require('child_process');
-
-// let options = require("./.config/pem_config").options;
+const {spawn} = require('child_process');
+// const https = require('https');
+// const options = require("./.config/pem_config").options;
 
 const app = express();
 const server = http.createServer(app);
-// const server = https.createServer(options, app);
 const io = new Server(server);
 const ipaddr = "172.23.246.241";
+const python = spawn('python3', ['./python/yolo.py']);
+// const server = https.createServer(options, app);
 
-let img = null;
+python.stdout.on('data', function (data) {
+    // console.log(data.toString("utf8"));
+    // console.log("emit")
+    io.emit('img', data.toString("utf8"));
+});
+python.stderr.on('data', function (data) {
+    console.log(data.toString("utf8"));
+});
 
-
+let img = "";
 let tcp = net.createServer(function (socket) {
     socket.setEncoding('utf8')
 
@@ -23,22 +30,12 @@ let tcp = net.createServer(function (socket) {
         data = String(data);
         if(data.lastIndexOf("끝") !== -1) {
             data = data.split("끝");
-            result = spawnSync('python3', ['./python/yolo.py', img+data[0]]);
-            if(result.status !== 0) {
-                console.log(result.stderr.toString("utf8"));
-            }
-            else {
-                console.log("성공")
-                io.emit('img', result.stdout.toString("utf8"));
-            }
-
+            python.stdin.write(img + data[0] + "\n");
             // io.emit('img', img+data[0]);
-            // io.emit(spawnSync('python3', ['./python/yolo.py', img+data[0]]).stdout.toString("utf8"))
-
             img = data[1]
         }
         else {
-            if(img !== null) img += data;
+            img += data;
         }
     });
     socket.on('close', function () {
